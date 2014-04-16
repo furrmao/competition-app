@@ -388,7 +388,7 @@
     <div><a href="mailto: #: data.email #">#: data.email #</a></div>
     <div><a href="tel:#: data.telephone #">#: data.telephone #</a></div>
     <div>#: data.office.title #</div>
-    <div><img src="#: data.image.url #"></div>
+    <div><img src="#: data.image.url #" alt="A Photo"></div>
 
 
 </script>
@@ -512,7 +512,7 @@
 
 <!--start: pure jquery approach -->
 <script>
-
+    $(document).ready(function() {
     var inlineData = {"sys": {
         "type": "Array"
     }, "total": 3, "skip": 0, "limit": 100, "items": [
@@ -652,7 +652,7 @@
 //
 //                });
     }
-
+    });
 
 </script>
 <!--end: pure jquery approach -->
