@@ -2,18 +2,24 @@
 <html>
 <head>
     <title></title>
-    <meta charset="utf-8" />
-    <link href="kendo/styles/kendo.mobile.all.min.css" rel="stylesheet" />
-    <link href="styles/main.css" rel="stylesheet" />
+    <meta charset="utf-8"/>
+    <link href="kendo/styles/kendo.mobile.all.min.css" rel="stylesheet"/>
+    <link href="styles/main.css" rel="stylesheet"/>
 
     <script src="cordova.js"></script>
     <script src="kendo/js/jquery.min.js"></script>
     <script src="kendo/js/kendo.mobile.min.js"></script>
-    <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=true"></script>
+    <script src="scripts/libs/lo-dash/lodash.js"></script>
+    <script src="scripts/libs/masonry/masonry.pkgd.js"></script>
+    <!--<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=true"></script>-->
 
     <script src="scripts/login.js"></script>
     <script src="scripts/location.js"></script>
     <script src="scripts/weather.js"></script>
+    <!--<script src="scripts/tiles.js"></script>-->
+
+    <script src="scripts/cache.js"></script>
+    <script src="scripts/test.js"></script>
     <script src="scripts/app.js"></script>
     <style>
         html .km-wp-light .km-content,
@@ -26,113 +32,298 @@
         html .km-wp-light *:not(.k-label) > select {
             background: #fff;
         }
+
+        .item {
+            width: 200px;
+            height: 200px;
+            background-color: red;
+            border: solid 2px #ffffff;
+        }
+
     </style>
 </head>
 <body>
-    <!--Home-->
-    <div id="tabstrip-home"
-        data-role="view"
-        data-title="Home">
+<!--Home-->
+<div id="tabstrip-home"
+     data-role="view"
+     data-title="Home">
 
-        <div class="view-content">
-            <h1>Welcome Mike!</h1>
-            <a id="skin-change" data-role="button" data-click="app.changeSkin">Flat</a>
-            <p>
-                Telerik AppBuilder&trade; enables you to build cross-platform device applications regardless of your
-                    development platform by combining the convenience of a local development toolset with the
-                    power and flexibility of the cloud.
-            </p>
-            <div class="img"></div>
-        </div>
+    <div class="view-content">
+        <h1>Welcome Mike!</h1>
+        <a id="skin-change" data-role="button" data-click="app.changeSkin">Flat</a>
+
+        <p>
+            Telerik AppBuilder&trade; enables you to build cross-platform device applications regardless of your
+            development platform by combining the convenience of a local development toolset with the
+            power and flexibility of the cloud.
+        </p>
+
+        <div class="img"></div>
     </div>
+</div>
 
-    <!--Login-->
-    <div id="tabstrip-login"
-        data-role="view"
-        data-title="Login"
-        data-model="app.loginService.viewModel">
+<!--Login-->
+<div id="tabstrip-login"
+     data-role="view"
+     data-title="Login"
+     data-model="app.loginService.viewModel">
 
-        <div class="view-content">
-            <div class="logo"></div>
-            <h3 data-bind="invisible: isLoggedIn">Enter your credentials:</h3>
-            <h1 class="welcome" data-bind="visible: isLoggedIn">Welcome, <span data-bind="text: username"></span>!
-            </h1>
-            <div class="buttonArea">
-                <input type="submit" id="logout" data-role="button" data-bind="click: onLogout, visible: isLoggedIn" class="login-button" value="Logout" />
-            </div>
+    <div class="view-content">
+        <div class="logo"></div>
+        <h3 data-bind="invisible: isLoggedIn">Enter your credentials:</h3>
 
-            <form data-bind="events: { keyup: checkEnter }">
-                <ul data-role="listview" data-style="inset" data-bind="invisible: isLoggedIn">
-                    <li>
-                        <label>
-                            Username
-                                <input type="text" data-bind="value: username" />
-                        </label>
-                    </li>
-                    <li>
-                        <label>
-                            Password
-                                <input type="password" data-bind="value: password" />
-                        </label>
-                    </li>
-                </ul>
+        <h1 class="welcome" data-bind="visible: isLoggedIn">Welcome, <span data-bind="text: username"></span>!
+        </h1>
 
-                <div class="buttonArea">
-                    <input type="submit" id="login" data-role="button" data-bind="click: onLogin, invisible: isLoggedIn" class="login-button" value="Login" />
-                </div>
-            </form>
+        <div class="buttonArea">
+            <input type="submit" id="logout" data-role="button" data-bind="click: onLogout, visible: isLoggedIn"
+                   class="login-button" value="Logout"/>
         </div>
 
-    </div>
-
-    <!--Location-->
-    <div id="tabstrip-location"
-        data-role="view"
-        data-title="Location"
-        data-init="app.locationService.initLocation"
-        data-show="app.locationService.show"
-        data-hide="app.locationService.hide"
-        data-model="app.locationService.viewModel"
-        data-stretch="true">
-
-        <div id="no-map" data-bind="invisible: isGoogleMapsInitialized">
-            Location requires internet connection to display the map.
-        </div>
-        <div id="map-search-wrap" data-bind="visible: isGoogleMapsInitialized">
-            <button id="map-navigate-home" data-bind="click: onNavigateHome"></button>
-            <form onsubmit="return false;">
-                <input id="map-address" type="search" data-bind="value: address" placeholder="Address" />
-                <input id="map-search" type="submit" value="" data-bind="click: onSearchAddress" />
-            </form>
-        </div>
-        <div id="map-canvas" data-bind="visible: isGoogleMapsInitialized"></div>
-
-    </div>
-
-    <!--Weather-->
-    <div id="tabstrip-weather"
-        data-role="view"
-        data-title="Weather"
-        data-model="app.weatherService.viewModel">
-
-        <div class="weather">
-            <p class="weather-title">20-Day Forecast</p>
-
-            <div class="separator">
-                <div class="dark"></div>
-                <div class="light"></div>
-            </div>
-
-            <ul class="forecast-list"
-                data-role="listview"
-                data-bind="source: weatherDataSource"
-                data-template="weather-forecast-template">
+        <form data-bind="events: { keyup: checkEnter }">
+            <ul data-role="listview" data-style="inset" data-bind="invisible: isLoggedIn">
+                <li>
+                    <label>
+                        Username
+                        <input type="text" data-bind="value: username"/>
+                    </label>
+                </li>
+                <li>
+                    <label>
+                        Password
+                        <input type="password" data-bind="value: password"/>
+                    </label>
+                </li>
             </ul>
-        </div>
+
+            <div class="buttonArea">
+                <input type="submit" id="login" data-role="button" data-bind="click: onLogin, invisible: isLoggedIn"
+                       class="login-button" value="Login"/>
+            </div>
+        </form>
     </div>
 
-    <!--Weather forecast template-->
-    <script type="text/x-kendo-tmpl" id="weather-forecast-template">
+</div>
+
+<!--Location-->
+<div id="tabstrip-location"
+     data-role="view"
+     data-title="Location"
+     data-init="app.locationService.initLocation"
+     data-show="app.locationService.show"
+     data-hide="app.locationService.hide"
+     data-model="app.locationService.viewModel"
+     data-stretch="true">
+
+    <div id="no-map" data-bind="invisible: isGoogleMapsInitialized">
+        Location requires internet connection to display the map.
+    </div>
+    <div id="map-search-wrap" data-bind="visible: isGoogleMapsInitialized">
+        <button id="map-navigate-home" data-bind="click: onNavigateHome"></button>
+        <form onsubmit="return false;">
+            <input id="map-address" type="search" data-bind="value: address" placeholder="Address"/>
+            <input id="map-search" type="submit" value="" data-bind="click: onSearchAddress"/>
+        </form>
+    </div>
+    <div id="map-canvas" data-bind="visible: isGoogleMapsInitialized"></div>
+
+</div>
+
+<!--Weather-->
+<div id="tabstrip-weather"
+     data-role="view"
+     data-title="Weather"
+     data-model="app.weatherService.viewModel">
+
+    <div class="weather">
+        <p class="weather-title">20-Day Forecast</p>
+
+        <div class="separator">
+            <div class="dark"></div>
+            <div class="light"></div>
+        </div>
+
+        <ul class="forecast-list"
+            data-role="listview"
+            data-bind="source: weatherDataSource"
+            data-template="weather-forecast-template">
+        </ul>
+    </div>
+</div>
+
+<!--Tiles-->
+<div id="tabstrip-tiles"
+     data-role="view"
+     data-title="Tiles"
+     data-model="app.weatherService.viewModel">
+
+    <div class="weather">
+        <p class="weather-title">20-Day Forecast</p>
+
+        <div class="separator">
+            <div class="dark"></div>
+            <div class="light"></div>
+        </div>
+
+        <ul class="forecast-list"
+            data-role="listview"
+            data-bind="source: weatherDataSource"
+            data-template="weather-forecast-template">
+        </ul>
+    </div>
+</div>
+
+
+<!--start:test-->
+
+<!--start:DataSource-->
+<script>
+
+    var tiles = [
+        {
+            "tileId": "7yEGhFaVIQQOi6gwqk2e6g",
+            "title": "Checklist",
+            "size": "1,1",
+            "order": 2,
+            "image": {
+                "id": "3AfP1kBTi0CauIOWA2AIgG",
+                "title": "dawnraid",
+                "url": "//images.contentful.com/70oeg2af4yo7/3AfP1kBTi0CauIOWA2AIgG/4a7272a30e00a8f3deab893efddf7b3c/dawnraid.png"
+            },
+            "page": "did someone page me"
+        },
+        {
+            "tileId": "2F0prdD0qw6QY8eIaQ8mKS",
+            "title": "Events",
+            "size": "1,1",
+            "order": 5,
+            "image": {
+                "id": "3rW92aN1Q4GC88sYaGy4UI",
+                "title": "Events",
+                "url": "//images.contentful.com/70oeg2af4yo7/3rW92aN1Q4GC88sYaGy4UI/963f4d991428d098a8e6797d1f4dee7e/Events.png"
+            },
+            "page": "did someone page me"
+        }
+    ];
+
+    var tilesDataSource = new kendo.data.DataSource({data: tiles});
+
+
+</script>
+<!--end:DataSource-->
+
+<!--start:ViewModel-->
+<script>
+    $(document).ready(function () {
+
+
+        var car = {
+            make: 'Ford',
+            model: 'Angular'
+        };
+
+        var tilesViewModel = kendo.observable(
+                car
+        );
+
+        kendo.bind($("#vmContainer"), tilesViewModel);
+    });
+</script>
+<!--end:ViewModel-->
+
+<!--start:kendo.template-->
+<script>
+
+    $(document).ready(function () {
+        var data = {
+            title: 'Template Test',
+            items: [
+                {name: 'Item 1'},
+                {name: 'Item 2'}
+            ]
+        }
+
+        var dataTemplate = kendo.template($("#test-data-template").html())(data);
+
+        $("#templateContainer").html(dataTemplate);
+    });
+
+</script>
+<!--end:kendo.template-->
+
+<div id="tabstrip-test"
+     data-title="TEST"
+     data-role="view">
+
+    <h1>DataSource</h1>
+
+    <ul data-role="listview" data-source="tilesDataSource" data-template="test-template">
+    </ul>
+
+    <h1>ViewModel</h1>
+
+    <div id="vmContainer">
+        <input data-bind="value:make">
+    </div>
+
+    <h1>Template</h1>
+
+    <div id="templateContainer">
+
+    </div>
+</div>
+
+<script type="text/x-kendo-template" id="test-template">
+    #: data.title #
+</script>
+
+<script type="text/x-kendo-template" id="test-vm-template">
+    <h1>#= data.title #</h1>
+</script>
+
+<script type="text/x-kendo-template" id="test-data-template">
+    <h1>#= data.title #</h1>
+    <ul>
+        # _.forEach(data.items, function (item) { #
+        #= item.name #
+        # console.log('tileDataMapper ITEM', item);
+        }); #
+    </ul>
+
+</script>
+
+
+<!--end:test-->
+
+<!--start:masonry-->
+<div id="tabstrip-masonry" data-title="MASONRY"
+     data-role="view">
+    <h1>Masonry Goes Here...</h1>
+
+    <div id="container">
+        <div class="item">Item 1</div>
+        <div class="item">Item 2</div>
+        <div class="item">Item 3</div>
+        <div class="item">Item 4</div>
+        <div class="item">Item 5</div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        var $container = $('#container');
+        // initialize
+        $container.masonry({
+            columnWidth: 200,
+            itemSelector: '.item'
+        });
+    });
+</script>
+<!--end:masonry-->
+
+
+<!--Weather forecast template-->
+<script type="text/x-kendo-tmpl" id="weather-forecast-template">
         <div>
             <div class="position-left">
                 <span class="weather-info date">${day}</span>
@@ -145,27 +336,463 @@
                 <span class="weather-icon ${image}"></span>
             </div>
         </div>
-    </script>
 
-    <!--Layout-->
-    <div data-role="layout" data-id="tabstrip-layout">
 
-        <!--Header-->
-        <div data-role="header">
-            <div data-role="navbar">
-                <span data-role="view-title"></span>
-            </div>
-        </div>
 
-        <!--Footer-->
-        <div data-role="footer">
-            <div data-role="tabstrip">
-                <a href="#/" data-icon="home">Home</a>
-                <a href="#tabstrip-login" data-icon="contacts">Login</a>
-                <a href="#tabstrip-location" data-icon="search">Location</a>
-                <a href="#tabstrip-weather" data-icon="globe">Weather</a>
-            </div>
+
+</script>
+
+<script type="text/x-kendo-tmpl" id="test">
+    <h2>Hello, Hello</h2>
+
+
+
+</script>
+
+
+<!-- start:emergency contacts-->
+<div id="tabstrip-contacts"
+     data-title="Emergency Contacts"
+     data-role="view">
+
+    <div data-role="scroller">
+        <div data-role="listview"
+             data-source="contactDS3"
+             data-template="contacts-template">
+
         </div>
     </div>
+
+</div>
+
+<div id="tabstrip-contacts2"
+     data-title="Emergency Contacts 2"
+     data-role="view">
+
+    <div data-role="scroller">
+        <div id="manuallyBoundListView"
+             data-bind="source: items"
+             data-role="listview"
+             data-template="contactsvm-template">
+
+        </div>
+    </div>
+
+</div>
+
+<script type="text/x-kendo-template" id="contacts-template">
+
+    <div>#: data.firstName #</div>
+    <div>#: data.lastName #</div>
+    <div>#: data.practice #</div>
+    <div><a href="mailto: #: data.email #">#: data.email #</a></div>
+    <div><a href="tel:#: data.telephone #">#: data.telephone #</a></div>
+    <div>#: data.office.title #</div>
+    <div><img src="#: data.image.url #"></div>
+
+
+</script>
+
+<script type="text/x-kendo-template" id="contactsvm-template">
+
+
+    id: <span data-bind="text: id"></span>
+    <!--name: <span data-bind="text: name"></span>-->
+
+</script>
+
+<!--start: standard datasource script-->
+<script type="text/javascript">
+    //    $(document).ready(function () {
+
+
+    //    var contentType = '4ygwXLGXPWWuWcQGiSeyGa';
+
+    var space = "zpp0viuq4x1e";
+    var contentType = "4ygwXLGXPWWuWcQGiSeyGa";
+    var authorisation = "Bearer 31d5775c68437c57df39ebdde118dff797e89a545408ccb981abdb2908e79b60";
+
+    var url = "https://cdn.contentful.com/spaces/" + space + "/entries";
+    //    var url = "http://badurl.com/spaces/" + space + "/entries";
+    //    var url = 'data/contacts.json';
+
+
+    var query = {
+        content_type: '4ygwXLGXPWWuWcQGiSeyGa'
+    };
+
+    //    var contactDS = new kendo.data.DataSource({
+    //                data: testData,
+    //                schema:{
+    //                    data: 'items'
+    //                }
+    //            }
+    //    );
+
+
+    var contactDS3 = new kendo.data.DataSource({
+        transport: {
+            read: function (options) {
+                $.ajax({
+                    url: url,
+                    dataType: "json",
+                    data: {
+                        content_type: contentType
+                    },
+                    beforeSend: function (xhr) {
+                        xhr.setRequestHeader('Authorization', authorisation),
+                                xhr.setRequestHeader('Content-Type', 'application/json')
+                    },
+                    success: function (result) {
+                        // TODO: Read/Write to/form the localStore.
+                        // http://stackoverflow.com/questions/12980444/caching-a-kendo-ui-datasource-object-using-localstorage
+                        // TODO: Flatten the data.
+
+
+//                        console.log('AJAX SUCCESS RESULT:', JSON.stringify(result));
+//                        console.log('AJAX SUCCESS RESULT:', result);
+
+                        // write the result to the browsers local store.
+//                        writePermanentCache('contacts', JSON.stringify(result));
+
+
+                        // notify the data source that the request succeeded
+//                        var ret = result;
+//                        var ret = testData;
+                        var ret = contactsDataMapper(result);
+
+                        options.success(ret);
+
+
+                    },
+                    error: function (result) {
+//                        console.log('AJAX ERROR RESULT:', result);
+
+                        // TODO: notify user that the request has failed
+                        // TODO: read from cache in event of failure, if available
+                        // TODO: notify user that they are seeing cached data
+
+                        var cachedDataStr = readPermanentCache('contacts');
+                        var cachedDataObj = JSON.parse(cachedDataStr);
+
+
+//                        console.log('AJAX ERROR CACHEDDATA', cachedDataObj);
+//                        console.log('AJAX ERROR OPTIONS', options);
+
+
+                        // notify the data source that the request failed.
+                        options.error(result);
+//                        options.error(cachedDataObj);
+                    }
+//                    data:function(data){
+//                        console.log('DATA data:', data);
+//                    }
+                });
+            }
+        },
+//        group:{field:"office.title"}, // uncomment to enable grouping
+        schema: {
+            data: 'items'
+        }
+//        error:function(e){
+//            console.log('ERROR',e);
+//        }
+//        schema:function(data){
+//            console.log(data);
+//        }
+    });
+
+
+    contactDS3.read();
+
+
+    //    });
+</script>
+<!--end: standard datasource script-->
+
+<!--start: pure jquery approach -->
+<script>
+
+    var inlineData = {"sys": {
+        "type": "Array"
+    }, "total": 3, "skip": 0, "limit": 100, "items": [
+        {
+            "id": "6srrXCJ6qkAk6A2eqCgWc8",
+            "firstName": "Pamela",
+            "lastName": "Chepiga",
+            "telephone": "+44 203 088 4262",
+            "email": "mike.furr@allenovery.com",
+            "practice": "Business Services",
+            "image": {
+                "id": "4a2KKIkzpe804YWy2YOoMM",
+                "title": "Pamela Chapiga",
+                "url": "//images.contentful.com/zpp0viuq4x1e/4a2KKIkzpe804YWy2YOoMM/88364fe0fbd155d8d07cd5c5041e1eb7/PublishingRollupImage_pamela.chepiga.jpg"
+            },
+            "office": {
+                "id": "6MK8OU0JNYsQkskuKoyWIU",
+                "title": "New York"
+            }
+        },
+        {
+            "id": "123123123",
+            "firstName": "Pamela",
+            "lastName": "Chepiga",
+            "telephone": "+44 203 088 4262",
+            "email": "mike.furr@allenovery.com",
+            "practice": "Business Services",
+            "image": {
+                "id": "4a2KKIkzpe804YWy2YOoMM",
+                "title": "Pamela Chapiga",
+                "url": "//images.contentful.com/zpp0viuq4x1e/4a2KKIkzpe804YWy2YOoMM/88364fe0fbd155d8d07cd5c5041e1eb7/PublishingRollupImage_pamela.chepiga.jpg"
+            },
+            "office": {
+                "id": "6MK8OU0JNYsQkskuKoyWIU",
+                "title": "New York"
+            }
+        }
+    ]}
+
+//    var ret = contactsDataMapper(data);
+//
+//    var contactDS = new kendo.data.DataSource({
+//                data: inlineData,
+//                schema: {
+//                    data: 'items'
+//                }
+//            }
+//    );
+//
+//    contactDS.read();
+//
+
+
+
+//    var contactsVM = kendo.observable({
+//        products: [
+//            { id: 1, name: "Coffee" },
+//            { id: 2, name: "Tea" },
+//            { id: 3, name: "Juice" }
+//        ]
+//    });
+
+//    var contactsVM = kendo.observable(inlineData);
+//
+//    kendo.bind($("#manuallyBoundListView"), contactsVM);
+
+    getData()
+            .done(function (data, status) { // success
+
+                console.log('GETDATA() SUCCESS!!!');
+                console.log('GETDATA() SUCCESS DATA:', data);
+                console.log('GETDATA() SUCCESS STATUS:', status);
+
+                var contactsVM = kendo.observable(inlineData);
+
+                kendo.bind($("#manuallyBoundListView"), contactsVM);
+
+            })
+            .fail(function (xhr, status) { // error
+
+                console.log('GETDATA() ERROR!!!');
+                console.log('GETDATA() XHR:', xhr);
+                console.log('GETDATA() STATUS:', status);
+
+            })
+            .always(function (data, status) { // complete
+
+                console.log('GETDATA() COMPLETE!!!');
+                console.log('GETDATA() COMPLETE DATA:', data);
+                console.log('GETDATA() COMPLETE STATUS:', status);
+
+            });
+
+
+    function getData() {
+
+        var space = "zpp0viuq4x1e";
+        var contentType = "4ygwXLGXPWWuWcQGiSeyGa";
+        var authorisation = "Bearer 31d5775c68437c57df39ebdde118dff797e89a545408ccb981abdb2908e79b60";
+
+//        var url = "https://cdn.contentful.com/spaces/" + space + "/entries";
+        var url = 'data/contacts-mapped.json';
+
+
+        var promise = $.ajax({
+            url: url,
+            dataType: "json",
+            data: {
+                content_type: contentType
+            },
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader('Authorization', authorisation),
+                        xhr.setRequestHeader('Content-Type', 'application/json')
+            }});
+
+        return promise;
+
+//                .done(function (data, status) { // success
+//                    console.log('GETDATA() SUCCESS!!!');
+//                    console.log('GETDATA() SUCCESS DATA:', data);
+//                    console.log('GETDATA() SUCCESS STATUS:', status);
+//
+//                    var ret = contactsDataMapper(data);
+//
+//                    return ret;
+//
+//                })
+//                .fail(function(xhr, status){ // error
+//                    console.log('GETDATA() ERROR!!!');
+//                    console.log('GETDATA() XHR:', xhr);
+//                    console.log('GETDATA() STATUS:', status);
+//                })
+//                .always(function(data, status){ // complete
+//                    console.log('GETDATA() COMPLETE!!!');
+//                    console.log('GETDATA() COMPLETE DATA:', data);
+//                    console.log('GETDATA() COMPLETE STATUS:', status);
+//
+//                });
+    }
+
+
+</script>
+<!--end: pure jquery approach -->
+
+
+<!-- end:emergency contacts-->
+
+<!-- start: mapping script-->
+<script type="text/javascript">
+    function contactsDataMapper(contentfulData) {
+
+        // NOTE: The following script requires knowledge of Lo-Dash.
+        // Lo-Dash is a competitor of Underscore, and is far quicker.
+        // All objects that are referenced as _.{function} is a Lo-Dash function.
+
+        // the mapped data to return
+        var mappedData = {};
+
+        // Process the root data first
+        // assign the root properties.
+        _.assign(mappedData, {sys: contentfulData.sys});
+        _.assign(mappedData, {total: contentfulData.total});
+        _.assign(mappedData, {skip: contentfulData.skip});
+        _.assign(mappedData, {limit: contentfulData.limit});
+        // TODO: split out the above to a mapHeader function
+
+
+        var items = contentfulData.items; // contentful item array
+        var includes = contentfulData.includes; // contentful related assets and entries
+
+        // now map the contentful item collection
+        var newItems = _.map(contentfulData.items, function (item) { // callback
+
+            // map the properties
+            var mappedItem = {
+                id: item.sys.id,
+                firstName: item.fields.firstName,
+                lastName: item.fields.lastName,
+                telephone: item.fields.telephone,
+                email: item.fields.email,
+                practice: item.fields.practice
+            }
+
+            // map the known related assets
+            // image
+            if (typeof item.fields.image != 'undefined') {
+
+                // add the image to the mapped item.
+                _.assign(mappedItem, {"image": getAsset(item.fields.image.sys.id)});
+
+            }
+
+
+            // map the known related entries
+            // office
+            if (typeof item.fields.office != 'undefined') {
+                _.assign(mappedItem, {"office": getEntry(item.fields.office.sys.id)});
+            }
+
+            return mappedItem;
+
+        });
+
+
+        _.assign(mappedData, {items: newItems});
+
+        console.log('NEW DATA', mappedData);
+        console.log('NEW DATA STRINGIFY', JSON.stringify(mappedData));
+
+        function getAsset(assetId) {
+
+            // find the asset
+            var foundAsset = _.find(includes.Asset, function (asset) {
+
+                return asset.sys.id === assetId;
+
+            });
+
+            console.log('GETASSET foundAsset:', foundAsset);
+
+            // TODO: Think about returning the found object as-is
+            return {
+                id: assetId,
+                title: foundAsset.fields.title,
+                url: foundAsset.fields.file.url
+            };
+
+        }
+
+        function getEntry(entryId) {
+
+            console.log('GETENTRY entryId:', entryId);
+
+            // find the entry
+            var foundEntry = _.find(includes.Entry, function (entry) {
+
+                return entry.sys.id === entryId;
+
+            });
+
+            console.log('GETENTRY foundEntry:', foundEntry);
+
+
+            return {
+                id: entryId,
+                title: foundEntry.fields.name
+            };
+        }
+
+        return mappedData;
+
+    }
+    ;
+</script>
+<!-- end: mapping script-->
+
+
+<!--Layout-->
+<div data-role="layout" data-id="tabstrip-layout">
+
+    <!--Header-->
+    <div data-role="header">
+        <div data-role="navbar">
+            <span data-role="view-title"></span>
+        </div>
+    </div>
+
+    <!--Footer-->
+    <div data-role="footer">
+        <div data-role="tabstrip">
+            <a href="#/" data-icon="home">Home</a>
+            <!--<a href="#tabstrip-login" data-icon="contacts">Login</a>-->
+            <!--<a href="#tabstrip-location" data-icon="search">Location</a>-->
+            <!--<a href="#tabstrip-weather" data-icon="globe">Weather</a>-->
+            <a href="#tabstrip-test" data-icon="action">Tiles</a>
+            <a href="#tabstrip-masonry" data-icon="action">Masonry</a>
+            <a href="#tabstrip-contacts" data-icon="contacts">Contacts</a>
+            <a href="#tabstrip-contacts2" data-icon="contacts">Contacts</a>
+        </div>
+    </div>
+</div>
 </body>
 </html>
