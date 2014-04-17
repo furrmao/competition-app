@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <script src="cordova.js"></script>
+    <script src="kendo/js/jquery.min.js"></script>
+    <script src="kendo/js/kendo.mobile.min.js"></script>
+    <script src="scripts/libs/lo-dash/lodash.js"></script>
+
+    <style>
+        .km-view .km-header,
+        .km-view .km-footer {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+<!--start: home-->
+<div data-role="view" data-layout="contactsLayout">
+    <h1>Mobile App</h1>
+    <p>Trying to get the data binding to work how I want it to!!</p>
+</div>
+<!--end: home-->
+
+<!--start: layout-->
+<div data-role="layout" data-id="contactsLayout" data-platform="ios">
+    <div data-role="header">Header</div>
+    <div data-role="footer">footer</div>
+</div>
+<!--end: layout-->
+
+<script>
+    window.kendoMobileApplication = new kendo.mobile.Application($(document.body));
+</script>
+</body>
+</html>

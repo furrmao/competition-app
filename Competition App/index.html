@@ -3,8 +3,15 @@
 <head>
     <title></title>
     <meta charset="utf-8"/>
-    <link href="kendo/styles/kendo.mobile.all.min.css" rel="stylesheet"/>
+
+
     <link href="styles/main.css" rel="stylesheet"/>
+    <link href="styles/ao-branding.css" rel="stylesheet"/>
+    <link href="styles/ao-contacts.css" rel="stylesheet"/>
+
+    <link href="kendo/styles/kendo.mobile.all.min.css" rel="stylesheet"/>
+
+
 
     <script src="cordova.js"></script>
     <script src="kendo/js/jquery.min.js"></script>
@@ -21,26 +28,26 @@
     <script src="scripts/cache.js"></script>
     <script src="scripts/test.js"></script>
     <script src="scripts/app.js"></script>
-    <style>
-        html .km-wp-light .km-content,
-        html .km-wp-light .km-button,
-        html .km-wp-light .km-navbar,
-        html .km-wp-light .km-detail,
-        html .km-wp-light *:not(.k-label) > input:not(.k-input),
-        html .km-wp-light .k-dropdown,
-        html .km-wp-light *:not(.k-label) > textarea,
-        html .km-wp-light *:not(.k-label) > select {
-            background: #fff;
-        }
+    <!--<style>-->
+        <!--html .km-wp-light .km-content,-->
+        <!--html .km-wp-light .km-button,-->
+        <!--html .km-wp-light .km-navbar,-->
+        <!--html .km-wp-light .km-detail,-->
+        <!--html .km-wp-light *:not(.k-label) > input:not(.k-input),-->
+        <!--html .km-wp-light .k-dropdown,-->
+        <!--html .km-wp-light *:not(.k-label) > textarea,-->
+        <!--html .km-wp-light *:not(.k-label) > select {-->
+            <!--background: #fff;-->
+        <!--}-->
 
-        .item {
-            width: 200px;
-            height: 200px;
-            background-color: red;
-            border: solid 2px #ffffff;
-        }
+        <!--.item {-->
+            <!--width: 200px;-->
+            <!--height: 200px;-->
+            <!--background-color: red;-->
+            <!--border: solid 2px #ffffff;-->
+        <!--}-->
 
-    </style>
+    <!--</style>-->
 </head>
 <body>
 
@@ -151,29 +158,6 @@
         </ul>
     </div>
 </div>
-
-<!--Tiles-->
-<div id="tabstrip-tiles"
-     data-role="view"
-     data-title="Tiles"
-     data-model="app.weatherService.viewModel">
-
-    <div class="weather">
-        <p class="weather-title">20-Day Forecast</p>
-
-        <div class="separator">
-            <div class="dark"></div>
-            <div class="light"></div>
-        </div>
-
-        <ul class="forecast-list"
-            data-role="listview"
-            data-bind="source: weatherDataSource"
-            data-template="weather-forecast-template">
-        </ul>
-    </div>
-</div>
-
 
 <!--start:test-->
 
@@ -353,7 +337,7 @@
 
 <!-- start:emergency contacts-->
 <div id="tabstrip-contacts"
-     data-title="Emergency Contacts"
+     data-title="Emergency Contacts JJ"
      data-role="view">
 
     <div data-role="scroller">
@@ -372,9 +356,25 @@
 
     <div data-role="scroller">
         <div id="manuallyBoundListView"
+             data-auto-bind="false"
              data-bind="source: items"
              data-role="listview"
-             data-template="contactsvm-template">
+             data-template="contactsvm-template" >
+
+        </div>
+    </div>
+
+</div>
+
+<div id="tabstrip-contacts3"
+     data-title="Emergency Contacts 3"
+     data-role="view">
+
+    <div data-role="scroller">
+        <div data-role="listview"
+             data-auto-bind="false"
+             data-source="contactDS"
+             data-template="contacts-template">
 
         </div>
     </div>
@@ -383,16 +383,18 @@
 
 <script type="text/x-kendo-template" id="contacts-template">
 
-    <div>#: data.firstName #</div>
-    <div>#: data.lastName #</div>
-    <div>#: data.practice #</div>
-    <div><a href="mailto: #: data.email #?Subject=Competition App">#: data.email #</a></div>
-    <div><a href="tel:#: data.telephone #">#: data.telephone #</a></div>
-    <div>#: data.office.title #</div>
-    <div><img src="http:#: data.image.url #" alt="A Photo"></div>
-<!--<div><img-->
-        <!--src="http://images.contentful.com/zpp0viuq4x1e/7bO8OyZWRUGO2kQ8oeyqay/fc7e84f0fb8dcd078cc42f682bf2ac5a/PublishingRollupImage_thomas.abbondante.jpg"-->
-          <!--alt="Mr Haines"></div>-->
+
+
+        <div>#: data.firstName #</div>
+        <div>#: data.lastName #</div>
+        <div>#: data.practice #</div>
+        <div><a href="mailto: #: data.email #?Subject=Competition App">#: data.email #</a></div>
+        <div><a href="tel:#: data.telephone #">#: data.telephone #</a></div>
+        <div>#: data.office.title #</div>
+        <div><img src="#: data.image.url #" alt="A Photo"></div>
+
+
+
 
 </script>
 
@@ -436,64 +438,85 @@
     var contactDS3 = new kendo.data.DataSource({
         transport: {
             read: function (options) {
+                // JQuery Ajax
                 $.ajax({
                     url: url,
                     dataType: "json",
                     data: {
-                        content_type: contentType
+                        content_type: contentType,
+                        include:1
                     },
                     beforeSend: function (xhr) {
                         xhr.setRequestHeader('Authorization', authorisation),
                                 xhr.setRequestHeader('Content-Type', 'application/json')
                     },
                     success: function (result) {
+
+                        // DEBUGGING
+                        console.log('AJAX SUCCESS RESULT:', JSON.stringify(result));
+                        console.log('AJAX SUCCESS RESULT:', result);
+
                         // TODO: Read/Write to/form the localStore.
                         // http://stackoverflow.com/questions/12980444/caching-a-kendo-ui-datasource-object-using-localstorage
-                        // TODO: Flatten the data.
 
-
-//                        console.log('AJAX SUCCESS RESULT:', JSON.stringify(result));
-//                        console.log('AJAX SUCCESS RESULT:', result);
 
                         // write the result to the browsers local store.
-//                        writePermanentCache('contacts', JSON.stringify(result));
+                        // TODO: Check to see whether HTML5 Web Storage is supported
+                        writePermanentCache('contacts', JSON.stringify(result));
 
-
-                        // notify the data source that the request succeeded
-//                        var ret = result;
-//                        var ret = testData;
                         var ret = contactsDataMapper(result);
 
+                        // notify the data source that the request succeeded
                         options.success(ret);
 
 
                     },
                     error: function (result) {
-//                        console.log('AJAX ERROR RESULT:', result);
+                        // DEBUGGING
+                        console.log('AJAX ERROR RESULT:', result);
+                        console.log('AJAX ERROR OPTIONS', options);
 
                         // TODO: notify user that the request has failed
                         // TODO: read from cache in event of failure, if available
                         // TODO: notify user that they are seeing cached data
 
+                        // read from the cache
                         var cachedDataStr = readPermanentCache('contacts');
+
+                        // DEBUGGING
+                        console.log('AJAX ERROR cachedDataStr', cachedDataStr);
+
+                        // convert the JSON string into an object
                         var cachedDataObj = JSON.parse(cachedDataStr);
 
+                        // DEBUGGING
+                        console.log('AJAX ERROR cachedDataObj', cachedDataObj);
 
-//                        console.log('AJAX ERROR CACHEDDATA', cachedDataObj);
-//                        console.log('AJAX ERROR OPTIONS', options);
+
+                        // given that the cache is storing the data in the Contentful format, the data needs to be flattened.
+                        // TODO: decide whether we cache the contentful data or the flattened data
+                        var flattenedData = contactsDataMapper(cachedDataObj);
+
+                        // DEBUGGING
+                        console.log('AJAX ERROR flattenedData', flattenedData);
 
 
-                        // notify the data source that the request failed.
-                        options.error(result);
-//                        options.error(cachedDataObj);
+                        if(flattenedData !== null){
+                            // if we have cached data, notify the data source that the request succeeded
+                            options.success(flattenedData);
+
+                        }
+                        else {
+                            // notify the data source that the request failed.
+                            options.error(result);
+                        }
+
                     }
-//                    data:function(data){
-//                        console.log('DATA data:', data);
-//                    }
+
                 });
             }
         },
-//        group:{field:"office.title"}, // uncomment to enable grouping
+//        group:{field:"office.title"}, // enable grouping by office
         schema: {
             data: 'items'
         }
@@ -505,7 +528,6 @@
 //        }
     });
 
-
     contactDS3.read();
 
 
@@ -515,7 +537,7 @@
 
 <!--start: pure jquery approach -->
 <script>
-    $(document).ready(function() {
+//    $(document).ready(function() {
     var inlineData = {"sys": {
         "type": "Array"
     }, "total": 3, "skip": 0, "limit": 100, "items": [
@@ -555,19 +577,16 @@
         }
     ]}
 
-//    var ret = contactsDataMapper(data);
-//
-//    var contactDS = new kendo.data.DataSource({
-//                data: inlineData,
-//                schema: {
-//                    data: 'items'
-//                }
-//            }
-//    );
-//
-//    contactDS.read();
-//
 
+//var contactDS = new kendo.data.DataSource({
+//            data: inlineData,
+//            schema: {
+//                data: 'items'
+//            }
+//        }
+//);
+//
+//contactDS.read();
 
 
 //    var contactsVM = kendo.observable({
@@ -589,9 +608,20 @@
                 console.log('GETDATA() SUCCESS DATA:', data);
                 console.log('GETDATA() SUCCESS STATUS:', status);
 
-                var contactsVM = kendo.observable(inlineData);
 
-                kendo.bind($("#manuallyBoundListView"), contactsVM);
+                var contactDS = new kendo.data.DataSource({
+                            data: inlineData,
+                            schema: {
+                                data: 'items'
+                            }
+                        }
+                );
+
+                contactDS.fetch();
+
+//                var contactsVM = kendo.observable(inlineData);
+//
+//                kendo.bind($("#manuallyBoundListView"), contactsVM);
 
             })
             .fail(function (xhr, status) { // error
@@ -655,7 +685,7 @@
 //
 //                });
     }
-    });
+//    });
 
 </script>
 <!--end: pure jquery approach -->
@@ -767,8 +797,7 @@
 
         return mappedData;
 
-    }
-    ;
+    };
 </script>
 <!-- end: mapping script-->
 
@@ -794,6 +823,7 @@
             <a href="#tabstrip-masonry" data-icon="action">Masonry</a>
             <a href="#tabstrip-contacts" data-icon="contacts">Contacts</a>
             <a href="#tabstrip-contacts2" data-icon="contacts">Contacts</a>
+            <a href="#tabstrip-contacts3" data-icon="contacts">Contacts</a>
         </div>
     </div>
 </div>
