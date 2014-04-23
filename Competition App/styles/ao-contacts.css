@@ -163,3 +163,64 @@
   color: #eaeff1;
 }
 /* end:aoColour */
+#contactsListView .km-group-container {
+  background-color: blue;
+  width: 100%;
+}
+#contactsListView .km-list {
+  background-color: red;
+}
+#contactsListView li {
+  width: 50%;
+  border: 10px solid transparent;
+  float: left;
+}
+a:link {
+  color: #000000;
+  text-decoration: none;
+}
+a:visited {
+  color: #000000;
+  text-decoration: none;
+}
+/* visited link */
+a:hover {
+  color: #000000;
+  text-decoration: none;
+}
+a:active {
+  color: #000000;
+  text-decoration: none;
+}
+.contactCard {
+  height: 150px;
+  border: 1px solid #808080;
+}
+.contactCardDetails {
+  font-size: 11px;
+}
+.contactCardDetails > h1 {
+  font-size: 14px;
+  margin-top: 10px;
+  margin-left: 10px;
+  margin-bottom: 5px;
+  margin-right: 0px;
+  color: #569bbe;
+}
+.contactCardDetails > h2 {
+  margin-top: 0px;
+  margin-left: 10px;
+  margin-bottom: 5px;
+  margin-right: 0px;
+  font-size: 12px;
+}
+.contactCardDetails > .footer {
+  margin-bottom: 30px;
+  text-align: center;
+  width: 100%;
+  position: absolute;
+  bottom: 0px;
+}
+.contactCardDetails > .footer > .icon {
+  margin-right: 100px;
+}

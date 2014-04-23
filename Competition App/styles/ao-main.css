@@ -163,6 +163,13 @@
   color: #eaeff1;
 }
 /* end:aoColour */
-.contactListView .header {
-  background-color: white;
+#contactsListView li .km-group-container {
+  background-color: blue;
+}
+#contactsListView li {
+  width: 400px;
+  font-size: 11px;
+  border: 1px solid red;
+  float: left;
+  margin: 3px;
 }

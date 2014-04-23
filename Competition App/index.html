@@ -4,13 +4,12 @@
     <title></title>
     <meta charset="utf-8"/>
 
+    <link href="kendo/styles/kendo.mobile.all.min.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="styles/font-awesome/font-awesome.min.css"/>
 
     <link href="styles/main.css" rel="stylesheet"/>
     <link href="styles/ao-branding.css" rel="stylesheet"/>
     <link href="styles/ao-contacts.css" rel="stylesheet"/>
-
-    <link href="kendo/styles/kendo.mobile.all.min.css" rel="stylesheet"/>
-
 
 
     <script src="cordova.js"></script>
@@ -29,23 +28,23 @@
     <script src="scripts/test.js"></script>
     <script src="scripts/app.js"></script>
     <!--<style>-->
-        <!--html .km-wp-light .km-content,-->
-        <!--html .km-wp-light .km-button,-->
-        <!--html .km-wp-light .km-navbar,-->
-        <!--html .km-wp-light .km-detail,-->
-        <!--html .km-wp-light *:not(.k-label) > input:not(.k-input),-->
-        <!--html .km-wp-light .k-dropdown,-->
-        <!--html .km-wp-light *:not(.k-label) > textarea,-->
-        <!--html .km-wp-light *:not(.k-label) > select {-->
-            <!--background: #fff;-->
-        <!--}-->
+    <!--html .km-wp-light .km-content,-->
+    <!--html .km-wp-light .km-button,-->
+    <!--html .km-wp-light .km-navbar,-->
+    <!--html .km-wp-light .km-detail,-->
+    <!--html .km-wp-light *:not(.k-label) > input:not(.k-input),-->
+    <!--html .km-wp-light .k-dropdown,-->
+    <!--html .km-wp-light *:not(.k-label) > textarea,-->
+    <!--html .km-wp-light *:not(.k-label) > select {-->
+    <!--background: #fff;-->
+    <!--}-->
 
-        <!--.item {-->
-            <!--width: 200px;-->
-            <!--height: 200px;-->
-            <!--background-color: red;-->
-            <!--border: solid 2px #ffffff;-->
-        <!--}-->
+    <!--.item {-->
+    <!--width: 200px;-->
+    <!--height: 200px;-->
+    <!--background-color: red;-->
+    <!--border: solid 2px #ffffff;-->
+    <!--}-->
 
     <!--</style>-->
 </head>
@@ -325,10 +324,14 @@
 
 
 
+
+
 </script>
 
 <script type="text/x-kendo-tmpl" id="test">
     <h2>Hello, Hello</h2>
+
+
 
 
 
@@ -337,15 +340,15 @@
 
 <!-- start:emergency contacts-->
 <div id="tabstrip-contacts"
-     data-title="Emergency Contacts JJ"
+     data-title="Emergency Contacts"
      data-role="view">
 
     <div data-role="scroller">
-        <div data-role="listview"
-             data-source="contactDS3"
-             data-template="contacts-template">
+        <ul id="contactsListView" data-role="listview"
+            data-source="contactDS3"
+            data-template="contacts-template">
 
-        </div>
+        </ul>
     </div>
 
 </div>
@@ -359,7 +362,7 @@
              data-auto-bind="false"
              data-bind="source: items"
              data-role="listview"
-             data-template="contactsvm-template" >
+             data-template="contactsvm-template">
 
         </div>
     </div>
@@ -383,17 +386,26 @@
 
 <script type="text/x-kendo-template" id="contacts-template">
 
+    <div class="contactCard" style="width:100%;">
+        <div class="contactCardPhoto" style="width:100px; float: left;">
+            <img src="http:#: data.image.url #?w=100&q=100" alt="A Photo">
+        </div>
+        <div class="contactCardDetails" style="float: left;">
+            <h1>#: data.firstName #&nbsp;#: data.lastName #</h1>
+
+            <h2>#: data.practice #,&nbsp;#: data.office.title #</h2>
 
 
-        <div>#: data.firstName #</div>
-        <div>#: data.lastName #</div>
-        <div>#: data.practice #</div>
-        <div><a href="mailto: #: data.email #?Subject=Competition App">#: data.email #</a></div>
-        <div><a href="tel:#: data.telephone #">#: data.telephone #</a></div>
-        <div>#: data.office.title #</div>
-        <div><img src="http:#: data.image.url #" alt="A Photo"></div>
-
-
+            <div class="footer">
+                <a class="icon" href="mailto: #: data.email #?Subject=Competition App">
+                    <i class="fa fa-envelope fa-3x"></i>
+                </a>
+                <a class="icon" href="tel:#: data.telephone #">
+                    <i class="fa fa-phone-square fa-3x"></i>
+                </a>
+            </div>
+        </div>
+    </div>
 
 
 </script>
@@ -417,9 +429,9 @@
     var contentType = "4ygwXLGXPWWuWcQGiSeyGa";
     var authorisation = "Bearer 31d5775c68437c57df39ebdde118dff797e89a545408ccb981abdb2908e79b60";
 
-    var url = "https://cdn.contentful.com/spaces/" + space + "/entries";
+    //    var url = "https://cdn.contentful.com/spaces/" + space + "/entries";
     //    var url = "http://badurl.com/spaces/" + space + "/entries";
-    //    var url = 'data/contacts.json';
+    var url = 'data/contacts.json';
 
 
     var query = {
@@ -444,7 +456,7 @@
                     dataType: "json",
                     data: {
                         content_type: contentType,
-                        include:1
+                        include: 1
                     },
                     beforeSend: function (xhr) {
                         xhr.setRequestHeader('Authorization', authorisation),
@@ -501,7 +513,7 @@
                         console.log('AJAX ERROR flattenedData', flattenedData);
 
 
-                        if(flattenedData !== null){
+                        if (flattenedData !== null) {
                             // if we have cached data, notify the data source that the request succeeded
                             options.success(flattenedData);
 
@@ -537,7 +549,7 @@
 
 <!--start: pure jquery approach -->
 <script>
-//    $(document).ready(function() {
+    //    $(document).ready(function() {
     var inlineData = {"sys": {
         "type": "Array"
     }, "total": 3, "skip": 0, "limit": 100, "items": [
@@ -578,28 +590,28 @@
     ]}
 
 
-//var contactDS = new kendo.data.DataSource({
-//            data: inlineData,
-//            schema: {
-//                data: 'items'
-//            }
-//        }
-//);
-//
-//contactDS.read();
+    //var contactDS = new kendo.data.DataSource({
+    //            data: inlineData,
+    //            schema: {
+    //                data: 'items'
+    //            }
+    //        }
+    //);
+    //
+    //contactDS.read();
 
 
-//    var contactsVM = kendo.observable({
-//        products: [
-//            { id: 1, name: "Coffee" },
-//            { id: 2, name: "Tea" },
-//            { id: 3, name: "Juice" }
-//        ]
-//    });
+    //    var contactsVM = kendo.observable({
+    //        products: [
+    //            { id: 1, name: "Coffee" },
+    //            { id: 2, name: "Tea" },
+    //            { id: 3, name: "Juice" }
+    //        ]
+    //    });
 
-//    var contactsVM = kendo.observable(inlineData);
-//
-//    kendo.bind($("#manuallyBoundListView"), contactsVM);
+    //    var contactsVM = kendo.observable(inlineData);
+    //
+    //    kendo.bind($("#manuallyBoundListView"), contactsVM);
 
     getData()
             .done(function (data, status) { // success
@@ -685,7 +697,7 @@
 //
 //                });
     }
-//    });
+    //    });
 
 </script>
 <!--end: pure jquery approach -->
